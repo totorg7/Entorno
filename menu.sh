@@ -2,7 +2,7 @@
 
 opcion=0
 
-untiL [[ $opcion =~ [1-4] ]]; do
+until [[ $opcion =~ [1-4] ]]; do
 	echo "1)Lista Mayusculas. 2)Palabras con vocales. 3)Mostrar mails. 4)Mostrar numeros. 5)Salir."
 
 	read -p "Ingrese su opcion: " opcion
