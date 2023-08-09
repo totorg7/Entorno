@@ -24,7 +24,11 @@ function vocales() {
 	return 0
 }
 
-
+#Usamos el grep para extraer todas las palabras del archivo
+#utilizamos un bucle para procesar cada palabra. Si tiene todas las vocales, se imprime
+#use el \w pues esto significa que coincide con cualquier caracter de la palabra, ya sea mayuscula o minuscula
+#el simbolo + indica que coincidira con uno o mas caracteres
+#el comando \w equivale a [a-zA-Z0-9_]
 grep -o -E '\w+' "$archivo" | while read -r palabra; do
 
 	if vocales "$palabra"; then
