@@ -1,37 +1,35 @@
 #!/bin/bash
 
+echo "Ingrese el nombre del archivo"
+read archivo
 
-archivo="archivo-palabras.txt"
-#Definimos una funcion para que tome un argumento(la palabra a verificar) y compruebe si tiene todas las vocales
+if [[ ! -f "$archivo" ]]; then
+	echo "El archivo $archivo no existe"
+	exit 1
+fi
+
+
+#Definimos una funcion que sirve para ver si tiene todas las vocales
 function vocales() {
 	#Luego las transforma las mayusculas en minusculas, para que no haya problemas
 	palabra=$(echo "$1" | tr '[:upper:]' '[:lower:]')
 	#Usamos el for para ver si cada vocal esta presente
 	for vocal in a e i o u; do
-		if [[ ${palabra} != *${vocal}* ]]; then
+		if [[ ! ${palabra} =~ ${vocal} ]]; then
 		#Si esto no se cumple, retorna un exit con error
-			exit 1
+			return 1
 		#Caso contrario, retrna una salida con exito
 		fi
 	done
-	exit 0
+	return 0
 }
 
 
-#Aqui se declara un array (diccionario) vacio
-palabrasvocal=()
-#Usamos el while para que lea el archivo archivo_palabras.txt
-while read -r palabra; do
-	#para cada palabra, el while usa la funcion vocales para ver si tiene todas
-	if vocales "$palabra"; then
-		#si tiene todas las vocales, se agrega al array vacio
-		palabrasvocal+=("$palabra")
-	fi
-done < "$archivo"
+grep -o -E '\w+' "$archivo" | while read -r palabra; do
 
-#Por ultimo, se imprime cada palabra que este en el array
-for palabra in "${palabrasvocal[@]}"; do
-	echo "$palabra"
+	if vocales "$palabra"; then
+		echo "$palabra"
+	fi
 #Finalmente, las ordena y hace un reuento de cada palabra unica
 #Utilice el coando awk para formatear la salida de manera que el recuento de apariciones este entre parentesis despues de cada palabra.Investigue un poco y crei que era la manera mas eficiente
-done | sort | uniq -c | awk '{print $2"("$1")"}'
+done | sort | uniq -c | awk '{if ($1 == 1) print $2; else print $2"("$1")";}'
